@@ -38,10 +38,18 @@ export class WorkService {
 
     const currentWork = await this.findOne(id);
 
+    // Fetch 3 random works excluding the current work
+    const others = await this.prisma.work.findMany({
+      where: { id: { not: id } },
+      take: 3,
+      orderBy: { createdAt: 'asc' }, // Replace with random ordering logic if needed
+    });
+
     return {
       ...currentWork,
       previousItem,
       nextItem,
+      others,
     };
   }
 
