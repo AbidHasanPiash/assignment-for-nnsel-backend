@@ -9,6 +9,19 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mongodb"
   url      = env("DATABASE_URL")
+}
+
+model Work {
+  id            String   @id @default(cuid()) @map("_id") // Default ID for MongoDB
+  name          String
+  client        String
+  image         String
+  cover         String
+  details       String[]
+  features      String[]
+  featureImages String[]
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 }
