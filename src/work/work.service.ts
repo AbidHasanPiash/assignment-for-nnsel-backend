@@ -20,6 +20,31 @@ export class WorkService {
     return this.prisma.work.findUnique({ where: { id } });
   }
 
+  async findOneWithNeighbors(id: string) {
+    const allWorks = await this.prisma.work.findMany({
+      orderBy: { createdAt: 'asc' },
+      select: { id: true },
+    });
+
+    const currentIndex = allWorks.findIndex((work) => work.id === id);
+
+    if (currentIndex === -1) {
+      throw new Error('Work not found');
+    }
+
+    const previousItem = currentIndex > 0 ? allWorks[currentIndex - 1] : null;
+    const nextItem =
+      currentIndex < allWorks.length - 1 ? allWorks[currentIndex + 1] : null;
+
+    const currentWork = await this.findOne(id);
+
+    return {
+      ...currentWork,
+      previousItem,
+      nextItem,
+    };
+  }
+
   async update(id: string, data: UpdateWorkDto): Promise<Work> {
     return this.prisma.work.update({
       where: { id },

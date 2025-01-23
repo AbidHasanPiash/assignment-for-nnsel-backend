@@ -18,8 +18,8 @@ export class WorkController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.workService.findOne(id);
+  async findOne(@Param('id') id: string) {
+    return this.workService.findOneWithNeighbors(id);
   }
 
   @Patch(':id')
